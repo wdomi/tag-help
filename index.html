@@ -29,13 +29,19 @@ th{background:#ddd;position:sticky;top:0;}
   cursor:pointer;
 }
 
-/* ---- SPECIAL STYLE ONLY FOR THE MAIN SELECT DROPDOWN ---- */
+.selectWrap{
+  display:inline-block;
+  padding:3px;
+  border-radius:10px;
+  background:#e0a800;
+}
+
 #individSelect{
-  background:#fff7e6;
-  border:2px solid #e0a800;
+  border:none;
+  background:white;
   font-weight:600;
   padding:8px 12px;
-  border-radius:10px;
+  border-radius:8px;
 }
 
 </style>
@@ -69,9 +75,12 @@ th{background:#ddd;position:sticky;top:0;}
 </div>
 
 <div class="panel">
+
+<div class="selectWrap">
   <select id="individSelect">
     <option value="">select</option>
   </select>
+  </div>
     <button id="resetBtn">reset</button>
 </div>
 
