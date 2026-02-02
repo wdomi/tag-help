@@ -47,8 +47,12 @@ th{background:#ddd;position:sticky;top:0;}
 </div>
 
 <div class="panel">
-  <button id="resetBtn">reset</button>
+  <select id="individSelect">
+    <option value="">ind_id ind_name</option>
+  </select>
+    <button id="resetBtn">reset</button>
 </div>
+
 
 <table>
 <thead>
@@ -62,7 +66,6 @@ th{background:#ddd;position:sticky;top:0;}
 <tbody id="tableBody"></tbody>
 </table>
 
-<!-- ⬇️ EVERYTHING BELOW IS UNCHANGED ⬇️ -->
 <script>
 /* ---------- LANGUAGE DICTIONARY ---------- */
 const LANG = {
@@ -285,9 +288,38 @@ csvInput.onchange=e=>{
     buildColors(lColors,[...new Set([...unique("Mark_L_1_color"),...unique("Mark_L_2_color")])],selectedLColors);
 
     render(data);
+    buildIndividDropdown();
   };
   r.readAsText(file);
 };
+
+/* ------ ADD DROPDOWN FOR INDIVIDUAL SELECTION ----- */
+const individSelect = document.getElementById("individSelect");
+
+function buildIndividDropdown(){
+  individSelect.innerHTML = `<option value="">ind_id ind_name</option>`;
+  const seen = new Set();
+
+  data.forEach(d=>{
+    const key = d.Individ_ID + " " + d.Individ_Name;
+    if(seen.has(key)) return;
+    seen.add(key);
+
+    const o = document.createElement("option");
+    o.value = d.Individ_ID;
+    o.textContent = key;
+    individSelect.appendChild(o);
+  });
+}
+
+individSelect.onchange = ()=>{
+  if(!individSelect.value){
+    applyFilters();
+    return;
+  }
+  render(data.filter(d => d.Individ_ID === individSelect.value));
+};
+
 </script>
 
 </body>
