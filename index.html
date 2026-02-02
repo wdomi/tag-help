@@ -6,6 +6,7 @@
 <title>load CSV…</title>
 
 <style>
+  
 body{font-family:system-ui;margin:10px;background:#f7f7f7;}
 .panel{background:#e6e6e6;border-radius:12px;padding:10px;margin-bottom:10px;}
 .controls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
@@ -16,7 +17,23 @@ table{width:100%;border-collapse:collapse;background:white;font-size:0.85em;}
 th,td{padding:6px;border-bottom:1px solid #ccc;text-align:center;}
 th{background:#ddd;position:sticky;top:0;}
 .hidden{display:none;}
+
+/* --- make action buttons visually different from selects --- */
+#loadCsvBtn, #resetBtn{
+  background:#333;
+  color:white;
+  border:1px solid #222;
+  font-weight:600;
+  padding:6px 14px;
+  cursor:pointer;
+}
+
+#loadCsvBtn:hover, #resetBtn:hover{
+  background:#555;
+}
+  
 </style>
+  
 </head>
 
 <body>
