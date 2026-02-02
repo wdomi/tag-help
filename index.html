@@ -163,6 +163,7 @@ function applyLanguage(){
   lNum1.options[0].text=L.nr1;
   lNum2.options[0].text=L.nr2;
   document.querySelectorAll("th").forEach((th,i)=>th.textContent=L.headers[i]);
+  individSelect.options[0].text = L.select;
 }
 
 /* ---------- UI HELPERS ---------- */
@@ -297,7 +298,7 @@ csvInput.onchange=e=>{
 const individSelect = document.getElementById("individSelect");
 
 function buildIndividDropdown(){
-  individSelect.innerHTML = `<option value="">ind_id ind_name</option>`;
+individSelect.innerHTML = `<option value=""></option>`;
   const seen = new Set();
 
   data.forEach(d=>{
