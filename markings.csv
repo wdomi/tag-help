@@ -1,0 +1,4 @@
+﻿italiano,Individ_ID,Individ_Name,Sex,Age_Cohort,Mark_R_1_color,Mark_R_1_Nr,Mark_R_2_color,Mark_R_2_Nr,Mark_L_1_color,Mark_L_1_Nr,Mark_L_2_color,Mark_L_2_Nr,collar,remark
+deutsch,ind001,,F,juv,yellow,,green,97,blue,11,orange,,001,
+english,ind002,,M,adu,yellow,,orange,32,purple,,white,32,231,
+vallader,ind003,,M,adu,orange,62,orange,10,,,black,,,
