@@ -261,9 +261,11 @@ rNum1.onchange=rNum2.onchange=lNum1.onchange=lNum2.onchange=applyFilters;
 resetBtn.onclick=()=>{
   selectedRColors.clear();selectedLColors.clear();
   rNum1.value=rNum2.value=lNum1.value=lNum2.value="";
+  individSelect.value = "";            // ← ADD THIS
   document.querySelectorAll(".color").forEach(b=>b.classList.remove("active"));
   render(data);
 };
+
 
 loadCsvBtn.onclick=()=>csvInput.click();
 
@@ -290,6 +292,7 @@ csvInput.onchange=e=>{
 
     render(data);
     buildIndividDropdown();
+    applyLanguage();
   };
   r.readAsText(file);
 };
