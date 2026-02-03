@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>load CSV…</title>
+
+<style>
+  
+body{font-family:system-ui;margin:10px;background:#f7f7f7;}
+.panel{background:#e6e6e6;border-radius:12px;padding:10px;margin-bottom:10px;}
+.controls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  
+select,button{font-size:1em;padding:4px 8px;border-radius:8px;border:1px solid #666;background:white;}
+
+  button.color{min-width:70px;border:2px solid #333;font-weight:bold;}
+  button.color.active{outline:3px solid black;}
+table{width:100%;border-collapse:collapse;background:white;font-size:0.85em;}
+th,td{padding:6px;border-bottom:1px solid #ccc;text-align:center;}
+th{background:#ddd;position:sticky;top:0;}
+.hidden{display:none;}
+
+/* ---- SPECIAL STYLE ONLY FOR LOAD CSV BUTTON ---- */
+#loadCsvBtn{
+  background:#2d6cdf;
+  color:white;
+  border:2px solid #1b4ea3;
+  font-weight:600;
+  padding:4px 8px;
+  border-radius:8px;
+  cursor:pointer;
+    font-size:0.9em;      /* optional: slightly smaller text */
+}
+
+.selectWrap{
+  display:inline-block;
+  padding:3px;
+  border-radius:10px;
+  background:#e0a800;
+}
+
+#individSelect{
+  border:none;
+  background:white;
+  font-weight:600;
+  padding:8px 12px;
+  border-radius:8px;
+    font-size:0.9em;      /* optional: slightly smaller text */
+}
+
+</style>
+</head>
+
+<body>
+
+<h1 id="tierart">load CSV…</h1>
+
+<div class="panel">
+  <button id="loadCsvBtn">📂 load CSV</button>
+  <input type="file" id="csvInput" accept=".csv" class="hidden">
+</div>
+
+<div class="panel">
+  <h2 id="rightTitle">right ear marks</h2>
+  <div class="controls">
+    <select id="rNum1"><option value="">Nr 1</option></select>
+    <select id="rNum2"><option value="">Nr 2</option></select>
+  </div>
+  <div class="controls" id="rColors"></div>
+</div>
+
+<div class="panel">
+  <h2 id="leftTitle">left ear marks</h2>
+  <div class="controls">
+    <select id="lNum1"><option value="">Nr 1</option></select>
+    <select id="lNum2"><option value="">Nr 2</option></select>
+  </div>
+  <div class="controls" id="lColors"></div>
+</div>
+
+<div class="panel">
+
+<div class="selectWrap">
+  <select id="individSelect">
+    <option value="">select</option>
+  </select>
+  </div>
+    <button id="resetBtn">reset</button>
+</div>
+
+
+<table>
+<thead>
+<tr>
+<th>ID</th><th>Name</th><th>Sex</th><th>Age</th>
+<th>R1</th><th>Nr</th><th>R2</th><th>Nr</th>
+<th>L1</th><th>Nr</th><th>L2</th><th>Nr</th>
+<th>Collar</th><th>Remark</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+<script>
+/* ---------- LANGUAGE DICTIONARY ---------- ===> ***ADD TRANSLATION HERE!!***  */
+const LANG = {
+  deutsch:{
+    right:"Rechte Markierung", left:"Linke Markierung",
+    load:"CSV laden", reset:"Zurücksetzen", select:"Tier auswählen",
+    nr1:"Nr 1", nr2:"Nr 2",
+    headers:["ID","Name","Sex","Alter","R1","Nr","R2","Nr","L1","Nr","L2","Nr","Halsband","Info"],
+    title:"CSV laden…"
+  },
+  italiano:{
+    right:"marcatura destra", left:"marcatura sinistra",
+    load:"carica CSV", reset:"reset", select:"scegli individuo",
+    nr1:"davanti", nr2:"dietro",
+    headers:["ID","nome","sesso","età","D1","n°","D2","n°","S1","n°","S2","n°","collare","nota"],
+    title:"carica CSV…"
+  },
+  vallader:{
+    right:"entagls dretta", left:"entagls schnestra",
+    load:"chargiar CSV", reset:"reinizialiser", select:"individuum...",
+    nr1:"nr 1", nr2:"nr 2",
+    headers:["ID","nom","schlatta","classa vegldüm","D1","nr","D2","nr","S1","nr","S2","nr","culer","remarcha"],
+    title:"chargiar CSV…"
+  },
+  english:{
+    right:"right ear marks", left:"left ear marks",
+    load:"load CSV", reset:"reset", select:"select indiv",
+    nr1:"no 1", nr2:"no 2",
+    headers:["ID","name","sex","age class","R1","no","R2","no","L1","no","L2","no","collar","remark"],
+    title:"load CSV…"
+  }
+};
+
+/* ---------- COLOR GUESS ---------- */
+function getColorFromName(name){
+  if(!name)return"#ccc";
+  let c=name.toLowerCase().trim();
+  const dict = {
+    weiss:"white",schwarz:"black",grau:"gray",rot:"red",blau:"blue",
+    grün:"green",gelb:"yellow",orange:"orange",lila:"purple",
+    violett:"violet",braun:"brown",rosa:"pink",rosarot:"deeppink",
+    türkis:"turquoise",hellblau:"lightskyblue",dunkelblau:"darkblue",
+    hellgrün:"lightgreen",dunkelgrün:"darkgreen",
+    bianco:"white",nero:"black",grigio:"gray",rosso:"red",blu:"blue",
+    verde:"green",giallo:"yellow",arancione:"orange",lilla:"purple",
+    viola:"violet",marrone:"brown",turchese:"turquoise",
+    bluchiaro:"lightskyblue",bluscuro:"darkblue",
+    verdechiaro:"lightgreen",verdescuro:"darkgreen"
+  };
+  if (dict[c]) c = dict[c];
+  const s = new Option().style;
+  s.color = c;
+  if (s.color !== "") return c;
+  return "#ccc";
+}
+
+/* ---------- ROBUST CSV PARSER ---------- */
+let UI_LANG="deutsch";
+let data=[], selectedRColors=new Set(), selectedLColors=new Set();
+
+function detectSeparator(line){
+  const counts={
+    "\t":(line.match(/\t/g)||[]).length,
+    ";":(line.match(/;/g)||[]).length,
+    ",":(line.match(/,/g)||[]).length
+  };
+  return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+}
+
+function parseCSV(text){
+  text=text.replace(/\ufeff/g,"").replace(/\r/g,"").trim();
+  const lines=text.split("\n");
+  const sep=detectSeparator(lines[0]);
+  const headersRaw=lines.shift().split(sep).map(h=>h.trim());
+  UI_LANG=headersRaw[0].toLowerCase();
+  const headers=headersRaw.slice(1);
+
+  return lines.map(line=>{
+    const vals=line.split(sep).map(v=>v.trim()).slice(1);
+    let o={};
+    headers.forEach((h,i)=>o[h]=vals[i]||"");
+    return o;
+  });
+}
+
+/* ---------- LANGUAGE APPLY ---------- */
+function applyLanguage(){
+  const L=LANG[UI_LANG]||LANG.deutsch;
+  rightTitle.textContent=L.right;
+  leftTitle.textContent=L.left;
+  loadCsvBtn.textContent="📂 "+L.load;
+  resetBtn.textContent=L.reset;
+  rNum1.options[0].text=L.nr1;
+  rNum2.options[0].text=L.nr2;
+  lNum1.options[0].text=L.nr1;
+  lNum2.options[0].text=L.nr2;
+  document.querySelectorAll("th").forEach((th,i)=>th.textContent=L.headers[i]);
+  individSelect.options[0].text = L.select;
+}
+
+/* ---------- UI HELPERS ---------- */
+function unique(f){return[...new Set(data.map(d=>d[f]).filter(v=>v))];}
+
+function buildDropdown(sel,vals){
+  sel.innerHTML=sel.options[0].outerHTML;
+  vals.sort((a,b)=>a-b).forEach(v=>{
+    let o=document.createElement("option");
+    o.value=v;o.textContent=v;
+    sel.appendChild(o);
+  });
+}
+
+function buildColors(container,colors,set){
+  container.innerHTML="";
+  colors.forEach(c=>{
+    let b=document.createElement("button");
+    b.textContent=c;
+    b.className="color";
+    b.style.background=getColorFromName(c);
+    b.onclick=()=>{set.has(c)?set.delete(c):set.add(c);b.classList.toggle("active");applyFilters();};
+    container.appendChild(b);
+  });
+}
+
+function colorCellHTML(c){
+  if(!c)return"";
+  return `<span style="background:${getColorFromName(c)};padding:3px 6px;border-radius:6px;font-weight:bold;">${c.substring(0,3)}</span>`;
+}
+
+/* ---------- RENDER ---------- */
+function updateVisibleColumns() {
+  if (!data.length) return;
+
+  const presentFields = new Set(Object.keys(data[0]));
+
+  const columnMap = [
+    "Individ_ID","Individ_Name","Sex","Age_Cohort",
+    "Mark_R_1_color","Mark_R_1_Nr",
+    "Mark_R_2_color","Mark_R_2_Nr",
+    "Mark_L_1_color","Mark_L_1_Nr",
+    "Mark_L_2_color","Mark_L_2_Nr",
+    "collar","remark"
+  ];
+
+  document.querySelectorAll("thead th").forEach((th, i) => {
+    const field = columnMap[i];
+    th.style.display = presentFields.has(field) ? "" : "none";
+  });
+}
+
+  
+function render(rows){
+  tableBody.innerHTML="";
+
+  rows.forEach(d=>{
+    const cells = [
+      ["Individ_ID", d.Individ_ID],
+      ["Individ_Name", d.Individ_Name],
+      ["Sex", d.Sex],
+      ["Age_Cohort", d.Age_Cohort],
+
+      ["Mark_R_1_color", colorCellHTML(d.Mark_R_1_color)],
+      ["Mark_R_1_Nr", d.Mark_R_1_Nr],
+      ["Mark_R_2_color", colorCellHTML(d.Mark_R_2_color)],
+      ["Mark_R_2_Nr", d.Mark_R_2_Nr],
+
+      ["Mark_L_1_color", colorCellHTML(d.Mark_L_1_color)],
+      ["Mark_L_1_Nr", d.Mark_L_1_Nr],
+      ["Mark_L_2_color", colorCellHTML(d.Mark_L_2_color)],
+      ["Mark_L_2_Nr", d.Mark_L_2_Nr],
+
+      ["collar", d.collar],
+      ["remark", d.remark]
+    ];
+
+    let rowHTML = "<tr>";
+    cells.forEach(([key, val])=>{
+      if (key in d) rowHTML += `<td>${val ?? ""}</td>`;
+    });
+    rowHTML += "</tr>";
+
+    tableBody.insertAdjacentHTML("beforeend", rowHTML);
+  });
+}
+
+/* ---------- FILTER ---------- */
+function applyFilters(){
+  render(data.filter(d=>{
+    // RIGHT numbers — true AND without reuse
+const rNums = [d.Mark_R_1_Nr, d.Mark_R_2_Nr];
+const selectedRNums = [rNum1.value, rNum2.value].filter(v => v);
+if (selectedRNums.length) {
+  let pool = [...rNums];
+  for (let n of selectedRNums) {
+    const idx = pool.indexOf(n);
+    if (idx === -1) return false;
+    pool.splice(idx, 1); // remove so it cannot be reused
+  }
+}
+
+// LEFT numbers — true AND without reuse
+const lNums = [d.Mark_L_1_Nr, d.Mark_L_2_Nr];
+const selectedLNums = [lNum1.value, lNum2.value].filter(v => v);
+if (selectedLNums.length) {
+  let pool = [...lNums];
+  for (let n of selectedLNums) {
+    const idx = pool.indexOf(n);
+    if (idx === -1) return false;
+    pool.splice(idx, 1);
+  }
+}
+
+    if(selectedRColors.size){
+      const rc=[d.Mark_R_1_color,d.Mark_R_2_color];
+      if(![...selectedRColors].every(c=>rc.includes(c)))return false;
+    }
+    if(selectedLColors.size){
+      const lc=[d.Mark_L_1_color,d.Mark_L_2_color];
+      if(![...selectedLColors].every(c=>lc.includes(c)))return false;
+    }
+    return true;
+  }));
+}
+
+rNum1.onchange=rNum2.onchange=lNum1.onchange=lNum2.onchange=applyFilters;
+
+resetBtn.onclick=()=>{
+  selectedRColors.clear();selectedLColors.clear();
+  rNum1.value=rNum2.value=lNum1.value=lNum2.value="";
+  individSelect.value = "";            // ← ADD THIS
+  document.querySelectorAll(".color").forEach(b=>b.classList.remove("active"));
+  render(data);
+};
+
+
+loadCsvBtn.onclick=()=>csvInput.click();
+
+csvInput.onchange=e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+
+  const baseName = file.name.replace(/\.csv$/i,"");
+  tierart.textContent = baseName;
+  document.title = baseName;
+
+  const r=new FileReader();
+  r.onload=()=>{
+    data=parseCSV(r.result);
+    updateVisibleColumns();
+    applyLanguage();
+
+    buildDropdown(rNum1,unique("Mark_R_1_Nr"));
+    buildDropdown(rNum2,unique("Mark_R_2_Nr"));
+    buildDropdown(lNum1,unique("Mark_L_1_Nr"));
+    buildDropdown(lNum2,unique("Mark_L_2_Nr"));
+
+    buildColors(rColors,[...new Set([...unique("Mark_R_1_color"),...unique("Mark_R_2_color")])],selectedRColors);
+    buildColors(lColors,[...new Set([...unique("Mark_L_1_color"),...unique("Mark_L_2_color")])],selectedLColors);
+
+    render(data);
+    buildIndividDropdown();
+    applyLanguage();
+  };
+  r.readAsText(file);
+};
+
+/* ------ ADD DROPDOWN FOR INDIVIDUAL SELECTION ----- */
+const individSelect = document.getElementById("individSelect");
+
+function buildIndividDropdown(){
+individSelect.innerHTML = `<option value=""></option>`;
+  const seen = new Set();
+
+  data.forEach(d=>{
+    const key = d.Individ_ID + " " + d.Individ_Name;
+    if(seen.has(key)) return;
+    seen.add(key);
+
+    const o = document.createElement("option");
+    o.value = d.Individ_ID;
+    o.textContent = key;
+    individSelect.appendChild(o);
+  });
+}
+
+individSelect.onchange = ()=>{
+  if(!individSelect.value){
+    applyFilters();
+    return;
+  }
+  render(data.filter(d => d.Individ_ID === individSelect.value));
+};
+
+</script>
+
+</body>
+</html>
