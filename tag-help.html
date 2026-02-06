@@ -69,18 +69,16 @@ th{background:#ddd;position:sticky;top:0;}
 <div class="panel">
   <h2 id="rightTitle">right ear marks</h2>
   <div class="controls">
-    <select id="rNum1"><option value="">Nr 1</option></select>
-    <select id="rNum2"><option value="">Nr 2</option></select>
-  </div>
+  <select id="rNum"><option value="">Nr</option></select>
+</div>
   <div class="controls" id="rColors"></div>
 </div>
 
 <div class="panel">
   <h2 id="leftTitle">left ear marks</h2>
   <div class="controls">
-    <select id="lNum1"><option value="">Nr 1</option></select>
-    <select id="lNum2"><option value="">Nr 2</option></select>
-  </div>
+  <select id="lNum"><option value="">Nr</option></select>
+</div>
   <div class="controls" id="lColors"></div>
 </div>
 
@@ -305,29 +303,19 @@ function render(rows){
 /* ---------- FILTER ---------- */
 function applyFilters(){
   render(data.filter(d=>{
-    // RIGHT numbers — true AND without reuse
-const rNums = [d.Mark_R_1_Nr, d.Mark_R_2_Nr];
-const selectedRNums = [rNum1.value, rNum2.value].filter(v => v);
-if (selectedRNums.length) {
-  let pool = [...rNums];
-  for (let n of selectedRNums) {
-    const idx = pool.indexOf(n);
-    if (idx === -1) return false;
-    pool.splice(idx, 1); // remove so it cannot be reused
-  }
+
+    // RIGHT number
+if (rNum.value) {
+  const rNums = [d.Mark_R_1_Nr, d.Mark_R_2_Nr];
+  if (!rNums.includes(rNum.value)) return false;
 }
 
-// LEFT numbers — true AND without reuse
-const lNums = [d.Mark_L_1_Nr, d.Mark_L_2_Nr];
-const selectedLNums = [lNum1.value, lNum2.value].filter(v => v);
-if (selectedLNums.length) {
-  let pool = [...lNums];
-  for (let n of selectedLNums) {
-    const idx = pool.indexOf(n);
-    if (idx === -1) return false;
-    pool.splice(idx, 1);
-  }
+// LEFT number
+if (lNum.value) {
+  const lNums = [d.Mark_L_1_Nr, d.Mark_L_2_Nr];
+  if (!lNums.includes(lNum.value)) return false;
 }
+
 
     if(selectedRColors.size){
       const rc=[d.Mark_R_1_color,d.Mark_R_2_color];
@@ -341,15 +329,17 @@ if (selectedLNums.length) {
   }));
 }
 
-rNum1.onchange=rNum2.onchange=lNum1.onchange=lNum2.onchange=applyFilters;
 
 resetBtn.onclick=()=>{
-  selectedRColors.clear();selectedLColors.clear();
-  rNum1.value=rNum2.value=lNum1.value=lNum2.value="";
-  individSelect.value = "";            // ← ADD THIS
+  selectedRColors.clear();
+  selectedLColors.clear();
+  rNum.value = "";
+  lNum.value = "";
+  individSelect.value = "";
   document.querySelectorAll(".color").forEach(b=>b.classList.remove("active"));
   render(data);
 };
+
 
 
 loadCsvBtn.onclick=()=>csvInput.click();
@@ -368,10 +358,20 @@ csvInput.onchange=e=>{
     updateVisibleColumns();
     applyLanguage();
 
-    buildDropdown(rNum1,unique("Mark_R_1_Nr"));
-    buildDropdown(rNum2,unique("Mark_R_2_Nr"));
-    buildDropdown(lNum1,unique("Mark_L_1_Nr"));
-    buildDropdown(lNum2,unique("Mark_L_2_Nr"));
+buildDropdown(rNum, [
+  ...new Set([
+    ...unique("Mark_R_1_Nr"),
+    ...unique("Mark_R_2_Nr")
+  ])
+]);
+
+buildDropdown(lNum, [
+  ...new Set([
+    ...unique("Mark_L_1_Nr"),
+    ...unique("Mark_L_2_Nr")
+  ])
+]);
+
 
     buildColors(rColors,[...new Set([...unique("Mark_R_1_color"),...unique("Mark_R_2_color")])],selectedRColors);
     buildColors(lColors,[...new Set([...unique("Mark_L_1_color"),...unique("Mark_L_2_color")])],selectedLColors);
@@ -409,6 +409,9 @@ individSelect.onchange = ()=>{
   }
   render(data.filter(d => d.Individ_ID === individSelect.value));
 };
+
+
+rNum.onchange = lNum.onchange = applyFilters;
 
 </script>
 
