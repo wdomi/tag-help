@@ -134,22 +134,28 @@ const LANG = {
   }
 };
 
-/* ---------- COLOR GUESS ---------- => qui devi cambiare il colore in lingua inglese nel codice del colore HEX*/ 
+/* ---------- COLOR GUESS ---------- @Alice ==> qui cambi i colori, per es. invece di "violet" = #f5d2fa */
 function getColorFromName(name){
   if(!name)return"#ccc";
   let c=name.toLowerCase().trim();
   const dict = {
     weiss:"white",schwarz:"black",grau:"gray",rot:"red",blau:"blue",
-    grün:"green",gelb:"yellow",orange:"orange",lila:"#e5a0fa",
+    grün:"green",gelb:"yellow",orange:"orange",lila:"purple",
     violett:"violet",braun:"brown",rosa:"pink",rosarot:"deeppink",
     türkis:"turquoise",hellblau:"lightskyblue",dunkelblau:"darkblue",
     hellgrün:"lightgreen",dunkelgrün:"darkgreen",
     
     bianco:"white",nero:"black",grigio:"gray",rosso:"red",blu:"blue",
-    verde:"green",giallo:"yellow",arancione:"orange",lilla:"#f5c7fc",
+    verde:"green",giallo:"yellow",arancione:"orange",lilla:"purple",
     viola:"violet",marrone:"brown",turchese:"turquoise",
     bluchiaro:"lightskyblue",bluscuro:"darkblue",
     verdechiaro:"lightgreen",verdescuro:"darkgreen"
+
+    white:"white",black:"black",gray:"gray",red:"red",blue:"blue",
+    green:"green",yellow:"yellow",orange:"orange",purple:"#f5d2fa",
+    violet:"#f5d2fa",brown:"brown",turquoise:"turquoise",
+    lightskyblue:"lightskyblue",darkblue:"darkblue",
+    lightgreen:"lightgreen",darkgreen:"darkgreen"
   };
   if (dict[c]) c = dict[c];
   const s = new Option().style;
