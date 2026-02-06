@@ -134,18 +134,19 @@ const LANG = {
   }
 };
 
-/* ---------- COLOR GUESS ---------- */
+/* ---------- COLOR GUESS ---------- => qui devi cambiare il colore in lingua inglese nel codice del colore HEX*/ 
 function getColorFromName(name){
   if(!name)return"#ccc";
   let c=name.toLowerCase().trim();
   const dict = {
     weiss:"white",schwarz:"black",grau:"gray",rot:"red",blau:"blue",
-    grün:"green",gelb:"yellow",orange:"orange",lila:"purple",
+    grün:"green",gelb:"yellow",orange:"orange",lila:"#e5a0fa",
     violett:"violet",braun:"brown",rosa:"pink",rosarot:"deeppink",
     türkis:"turquoise",hellblau:"lightskyblue",dunkelblau:"darkblue",
     hellgrün:"lightgreen",dunkelgrün:"darkgreen",
+    
     bianco:"white",nero:"black",grigio:"gray",rosso:"red",blu:"blue",
-    verde:"green",giallo:"yellow",arancione:"orange",lilla:"purple",
+    verde:"green",giallo:"yellow",arancione:"orange",lilla:"#f4bbfc",
     viola:"violet",marrone:"brown",turchese:"turquoise",
     bluchiaro:"lightskyblue",bluscuro:"darkblue",
     verdechiaro:"lightgreen",verdescuro:"darkgreen"
