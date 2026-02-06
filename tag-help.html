@@ -217,13 +217,15 @@ lNum.options[0].text = L.Nr;
 function unique(f){return[...new Set(data.map(d=>d[f]).filter(v=>v))];}
 
 function buildDropdown(sel,vals){
-  sel.innerHTML=sel.options[0].outerHTML;
+  sel.innerHTML = `<option value="">Nr</option>`;
   vals.sort((a,b)=>a-b).forEach(v=>{
     let o=document.createElement("option");
-    o.value=v;o.textContent=v;
+    o.value=v;
+    o.textContent=v;
     sel.appendChild(o);
   });
 }
+
 
 function buildColors(container,colors,set){
   container.innerHTML="";
