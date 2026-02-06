@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>load CSV…</title>
 
+
+/* ===== QUI comincia il CSS per lo "style" (= colore, forma, spessori, etc.) ================== */
 <style>
   
 body{font-family:system-ui;margin:10px;background:#f7f7f7;}
@@ -49,6 +51,8 @@ th{background:#ddd;position:sticky;top:0;}
 }
 
 </style>
+/* ===== FINO a qui ============================================== */
+  
 </head>
 
 <body>
@@ -101,7 +105,10 @@ th{background:#ddd;position:sticky;top:0;}
 <tbody id="tableBody"></tbody>
 </table>
 
+
+/* ===== QUI comincia JavaScript (= funzioni) ================== */
 <script>
+  
 /* ---------- LANGUAGE DICTIONARY ---------- ===> ***ADD TRANSLATION HERE!!***  */
 const LANG = {
   deutsch:{
@@ -134,23 +141,23 @@ const LANG = {
   }
 };
 
-/* ---------- COLOR GUESS ---------- @Alice ==> qui cambi i colori, per es. invece di "violet" = #f5d2fa */
+/* ---------- COLOR TAGS ---------- => @Alice: qui puoi cambiare i colori dall'inglese al codice HEX (color picker) */ 
 function getColorFromName(name){
   if(!name)return"#ccc";
   let c=name.toLowerCase().trim();
   const dict = {
     weiss:"white",schwarz:"black",grau:"gray",rot:"red",blau:"blue",
-    grün:"green",gelb:"yellow",orange:"orange",lila:"purple",
-    violett:"violet",braun:"brown",rosa:"pink",rosarot:"deeppink",
+    grün:"green",gelb:"yellow",orange:"orange",lila:"#f5d2fa",
+    violett:"#f5d2fa",braun:"brown",rosa:"pink",rosarot:"deeppink",
     türkis:"turquoise",hellblau:"lightskyblue",dunkelblau:"darkblue",
     hellgrün:"lightgreen",dunkelgrün:"darkgreen",
     
     bianco:"white",nero:"black",grigio:"gray",rosso:"red",blu:"blue",
-    verde:"green",giallo:"yellow",arancione:"orange",lilla:"purple",
-    viola:"violet",marrone:"brown",turchese:"turquoise",
+    verde:"green",giallo:"yellow",arancione:"orange",lilla:"#f4bbfc",
+    viola:"#f5d2fa",marrone:"brown",turchese:"turquoise",
     bluchiaro:"lightskyblue",bluscuro:"darkblue",
-    verdechiaro:"lightgreen",verdescuro:"darkgreen"
-
+    verdechiaro:"lightgreen",verdescuro:"darkgreen",
+      
     white:"white",black:"black",gray:"gray",red:"red",blue:"blue",
     green:"green",yellow:"yellow",orange:"orange",purple:"#f5d2fa",
     violet:"#f5d2fa",brown:"brown",turquoise:"turquoise",
@@ -164,7 +171,7 @@ function getColorFromName(name){
   return "#ccc";
 }
 
-/* ---------- ROBUST CSV PARSER ---------- */
+/* ---------- CSV PARSER ---------- */
 let UI_LANG="deutsch";
 let data=[], selectedRColors=new Set(), selectedLColors=new Set();
 
@@ -402,6 +409,9 @@ individSelect.onchange = ()=>{
 };
 
 </script>
+
+/* ===== FINO a qui  ======================== */
+
 
 </body>
 </html>
