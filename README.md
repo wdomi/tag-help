@@ -1,15 +1,16 @@
 # Tag-help.html, what is it?
 
 Tag-help.html is a local "application" to help you find the correct individual filtering by markings' colors and/or numbers.
+It is meant to facilitate animals' observation during field work.
 
-# The application is based on two individual documents:
+# The application needs two documents:
 
 - **"markings.csv"**
   - it includes all the data for the tagged animals.
-  - you can give it the name of your species (e.g. "ibex.csv", "deer.csv", ...), the name gives the application its title.
+  - rename it with the name of your species (e.g. "ibex.csv", "deer.csv", ...), the name gives the application page its title.
 
 - **"tag-help.html"**
-  - it is basically a text document that opens in a browser such as Firefox, Chrome, Edge, etc.
+  - it is basically an "interactive text document" that opens in a browser such as Firefox, Chrome, Edge, etc.
   - it is local (on your computer or phone), you do not need to install anything and it does not need internet.
 
 # How does it work?
@@ -18,7 +19,7 @@ Tag-help.html is a local "application" to help you find the correct individual f
 
 Save the **"markings.csv"** on your computer and open it in Excel.
 
-**FIRST COLUMN:** enter your preferred language in cell A1.
+**FIRST COLUMN:** Choose your preferred language among the listed ones and copy-paste it in cell A1.
 
 ## 2 – Rest of the table
 
@@ -28,15 +29,15 @@ Change the data to match your animals:
 - Individ_Name
 - Sex
 - Age_Cohort = age or cohort
-- Mark_R_1_Farbe → colour, right, front
-- Mark_R_1_Farbe → colour, right, front
-- Mark_R_1_Nr → number (if applicable)
-- Mark_R_2_Farbe → colour, right, back
-- Mark_R_2_Nr → number (if applicable)
+- Mark_R_1_Farbe   → colour, right, front
+- Mark_R_1_Farbe   → colour, right, front
+- Mark_R_1_Nr      → number (if applicable)
+- Mark_R_2_Farbe   → colour, right, back
+- Mark_R_2_Nr      → number (if applicable)
 - Mark_L_1_Farbe → colour, left, front
-- Mark_L_1_Nr → number (if applicable)
+- Mark_L_1_Nr    → number (if applicable)
 - Mark_L_2_Farbe → colour, left, rear
-- Mark_L_2_Nr → number (if applicable)
+- Mark_L_2_Nr    → number (if applicable)
 - collar → 'yes' or number
 - remark → any other useful information about the individual markings (e.g. ear markings)
 
@@ -48,7 +49,7 @@ Change the data to match your animals:
 
 ## 3 – Use the application
 
-Download the **tag-help.html** on your computer or send **tag-help.html** and your edited **markings.csv** to your phone.
+Download the **tag-help.html** on your computer or send **tag-help.html** and your edited **markings.csv** to your phone (where you can find them again).
 
 Click on **tag-help.html** to open it in a browser, and import your CSV file (e.g. "markings.csv").
 
