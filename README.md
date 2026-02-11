@@ -1,7 +1,4 @@
-Tag-help.html
-
-
-# What is it?
+# Tag-help.html, what is it?
 
 Tag-help.html is a local "application" to help you find the correct individual filtering by markings' colors and/or numbers.
 
